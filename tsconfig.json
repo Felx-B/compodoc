@@ -3,6 +3,7 @@
     "module": "es2015",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "moduleResolution": "node",
     "target": "es5",
     "noImplicitAny": false,
     "outDir": "./dist",

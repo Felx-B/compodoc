@@ -1,9 +1,11 @@
-<p class="comment">
-    <h3>File</h3>
-</p>
-<p class="comment">
-    <code>{{component.file}}</code>
-</p>
+{{#if component.file}}
+    <p class="comment">
+        <h3>File</h3>
+    </p>
+    <p class="comment">
+        <code>{{component.file}}</code>
+    </p>
+{{/if}}
 
 {{#if component.description}}
     <p class="comment">
@@ -49,151 +51,153 @@
     </div>
 {{/if}}
 
-<section>
-    <h3>Metadata</h3>
-    <table class="table table-sm table-hover">
-        <tbody>
-            {{#if component.animations}}
-            <tr>
-                <td class="col-md-3">animations</td>
-                <td class="col-md-9"><code>{{component.animations}}</code></td>
-            </tr>
-            {{/if}}
+{{#if component.displayMetadata}}
+    <section>
+        <h3>Metadata</h3>
+        <table class="table table-sm table-hover">
+            <tbody>
+                {{#if component.animations}}
+                <tr>
+                    <td class="col-md-3">animations</td>
+                    <td class="col-md-9"><code>{{component.animations}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.changeDetection}}
-            <tr>
-                <td class="col-md-3">changeDetection</td>
-                <td class="col-md-9"><code>{{component.changeDetection}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.changeDetection}}
+                <tr>
+                    <td class="col-md-3">changeDetection</td>
+                    <td class="col-md-9"><code>{{component.changeDetection}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.encapsulation}}
-            <tr>
-                <td class="col-md-3">encapsulation</td>
-                <td class="col-md-9"><code>{{component.encapsulation}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.encapsulation}}
+                <tr>
+                    <td class="col-md-3">encapsulation</td>
+                    <td class="col-md-9"><code>{{component.encapsulation}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.entryComponents}}
-            <tr>
-                <td class="col-md-3">entryComponents</td>
-                <td class="col-md-9"><code>{{component.entryComponents}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.entryComponents}}
+                <tr>
+                    <td class="col-md-3">entryComponents</td>
+                    <td class="col-md-9"><code>{{component.entryComponents}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.exportAs}}
-            <tr>
-                <td class="col-md-3">exportAs</td>
-                <td class="col-md-9"><code>{{component.exportAs}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.exportAs}}
+                <tr>
+                    <td class="col-md-3">exportAs</td>
+                    <td class="col-md-9"><code>{{component.exportAs}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.host}}
-            <tr>
-                <td class="col-md-3">host</td>
-                <td class="col-md-9"><code>{{object component.host}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.host}}
+                <tr>
+                    <td class="col-md-3">host</td>
+                    <td class="col-md-9"><code>{{object component.host}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.inputs}}
-            <tr>
-                <td class="col-md-3">inputs</td>
-                <td class="col-md-9"><code>{{breakComma component.inputs}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.inputs}}
+                <tr>
+                    <td class="col-md-3">inputs</td>
+                    <td class="col-md-9"><code>{{breakComma component.inputs}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.interpolation}}
-            <tr>
-                <td class="col-md-3">host</td>
-                <td class="col-md-9"><code>{{component.interpolation}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.interpolation}}
+                <tr>
+                    <td class="col-md-3">host</td>
+                    <td class="col-md-9"><code>{{component.interpolation}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.moduleId}}
-            <tr>
-                <td class="col-md-3">moduleId</td>
-                <td class="col-md-9"><code>{{component.moduleId}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.moduleId}}
+                <tr>
+                    <td class="col-md-3">moduleId</td>
+                    <td class="col-md-9"><code>{{component.moduleId}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.outputs}}
-            <tr>
-                <td class="col-md-3">outputs</td>
-                <td class="col-md-9"><code>{{breakComma component.outputs}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.outputs}}
+                <tr>
+                    <td class="col-md-3">outputs</td>
+                    <td class="col-md-9"><code>{{breakComma component.outputs}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.providers}}
-            <tr>
-                <td class="col-md-3">providers</td>
-                <td class="col-md-9">
-                    <code>
-                    {{#each component.providers}}
-                        {{name}}
-                    {{/each}}
-                    </code>
-                </td>
-            </tr>
-            {{/if}}
+                {{#if component.providers}}
+                <tr>
+                    <td class="col-md-3">providers</td>
+                    <td class="col-md-9">
+                        <code>
+                        {{#each component.providers}}
+                            {{name}}
+                        {{/each}}
+                        </code>
+                    </td>
+                </tr>
+                {{/if}}
 
-            {{#if component.queries}}
-            <tr>
-                <td class="col-md-3">queries</td>
-                <td class="col-md-9"><code>{{component.queries}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.queries}}
+                <tr>
+                    <td class="col-md-3">queries</td>
+                    <td class="col-md-9"><code>{{component.queries}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.selector}}
-            <tr>
-                <td class="col-md-3">selector</td>
-                <td class="col-md-9"><code>{{component.selector}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.selector}}
+                <tr>
+                    <td class="col-md-3">selector</td>
+                    <td class="col-md-9"><code>{{component.selector}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.styleUrls}}
-            <tr>
-                <td class="col-md-3">styleUrls</td>
-                <td class="col-md-9"><code>{{breakComma component.styleUrls}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.styleUrls}}
+                <tr>
+                    <td class="col-md-3">styleUrls</td>
+                    <td class="col-md-9"><code>{{breakComma component.styleUrls}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.styles}}
-            <tr>
-                <td class="col-md-3">styles</td>
-                <td class="col-md-9"><code>{{component.styles}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.styles}}
+                <tr>
+                    <td class="col-md-3">styles</td>
+                    <td class="col-md-9"><code>{{component.styles}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.template}}
-            <tr>
-                <td class="col-md-3">template</td>
-                <td class="col-md-9"><pre class="line-numbers"><code class="language-html">{{ component.template }}</code></pre></td>
-            </tr>
-            {{/if}}
+                {{#if component.template}}
+                <tr>
+                    <td class="col-md-3">template</td>
+                    <td class="col-md-9"><pre class="line-numbers"><code class="language-html">{{ component.template }}</code></pre></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.templateUrl}}
-            <tr>
-                <td class="col-md-3">templateUrl</td>
-                <td class="col-md-9"><code>{{component.templateUrl}}</code></td>
-            </tr>
-            {{/if}}
+                {{#if component.templateUrl}}
+                <tr>
+                    <td class="col-md-3">templateUrl</td>
+                    <td class="col-md-9"><code>{{component.templateUrl}}</code></td>
+                </tr>
+                {{/if}}
 
-            {{#if component.viewProviders}}
-            <tr>
-                <td class="col-md-3">viewProviders</td>
-                <td class="col-md-9">
-                    <code>
-                    {{#each component.viewProviders}}
-                        {{name}}
-                    {{/each}}
-                    </code>
-                </td>
-            </tr>
-            {{/if}}
+                {{#if component.viewProviders}}
+                <tr>
+                    <td class="col-md-3">viewProviders</td>
+                    <td class="col-md-9">
+                        <code>
+                        {{#each component.viewProviders}}
+                            {{name}}
+                        {{/each}}
+                        </code>
+                    </td>
+                </tr>
+                {{/if}}
 
-        </tbody>
-    </table>
-</section>
+            </tbody>
+        </table>
+    </section>
+{{/if}}
 
 {{#if component.inputsClass}}
     <section>

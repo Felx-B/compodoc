@@ -54,7 +54,8 @@ export class Configuration implements ConfigurationInterface {
         coverageTest: false,
         coverageTestThreshold: COMPODOC_DEFAULTS.defaultCoverageThreshold,
         routesLength: 0,
-        angularVersion: ''
+        angularVersion: '',
+        publicDocumentation: COMPODOC_DEFAULTS.publicDocumentation
     };
 
     constructor() {

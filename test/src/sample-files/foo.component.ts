@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { FooService } from './foo.service';
 
 @Component({
 	selector: 'app-foo',
@@ -17,7 +18,29 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
 		</div>
 	`
 })
-export class FooComponent {
+export class FooComponent implements IProxy {
+
+	private AllowedMembers: ProxyAllowed = {
+		Proxy: [
+			'changeLabel1',
+			'changeLabel2',
+			'changeLabel3',
+			'changeLabel4',
+			'exampleInput',
+			'internalMethod',
+
+		],
+		Config: [
+			'Label1',
+			'Label2',
+			'Label3',
+			'Label4',
+		]
+	};
+
+	constructor(communicationService: FooService) {
+
+	}
 
 	/**
 	 * An example input
@@ -28,6 +51,26 @@ export class FooComponent {
 	/**
 	 * An example output
 	 */
-	@Output() exampleOutput: EventEmitter<{foo: string}> = new EventEmitter();
+	@Output() exampleOutput: EventEmitter<{ foo: string }> = new EventEmitter();
 
+
+	internalMethod(input: string): string {
+		return "";
+
+	}
+
+	public changeLabel1: string;
+	public changeLabel2: string;
+	public changeLabel3: string;
+	public changeLabel4: string;
+	public changeLabel5: string;
+
+}
+export interface IProxy {
+	AllowedMembers?: ProxyAllowed;
+}
+
+export class ProxyAllowed {
+	Proxy?: string[];
+	Config?: string[];
 }

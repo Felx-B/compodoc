@@ -12,7 +12,12 @@
             "args": [
                 "${workspaceRoot}/bin/index-cli.js",
                 "-p",
-                "test/src/sample-files/tsconfig.simple.json"
+               // "test/src/sample-files/tsconfig.simple.json",
+               "../SFK/src/Sfk.WebComponents/src/tsconfig.app.json",
+                "--disableSourceCode",
+                "--disableGraph",
+                "--disableCoverage",
+                "--publicDocumentation"
             ],
             "cwd": "${workspaceRoot}",
             "protocol": "inspector"

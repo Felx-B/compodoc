@@ -64,6 +64,7 @@ export class CliApplication extends Application
             .option('--disableGraph', 'Do not add the dependency graph', false)
             .option('--disableCoverage', 'Do not add the documentation coverage report', false)
             .option('--disablePrivateOrInternalSupport', 'Do not show private, @internal or Angular lifecycle hooks in generated documentation', false)
+            .option('--publicDocumentation', 'Show only restricted elements', false)       
             .parse(process.argv);
 
         let outputHelp = () => {
@@ -150,6 +151,9 @@ export class CliApplication extends Application
 
         if (program.disableCoverage) {
             this.configuration.mainData.disableCoverage = program.disableCoverage;
+        }
+         if (program.publicDocumentation) {
+            this.configuration.mainData.publicDocumentation = program.publicDocumentation;
         }
 
         if (program.disablePrivateOrInternalSupport) {
