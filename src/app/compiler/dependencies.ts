@@ -309,7 +309,7 @@ export class Dependencies {
                     let props = this.findProps(visitedNode);
                     let IO = this.getComponentIO(file, srcFile, node);
 
-                    if (this.isModule(metadata)) {
+                    if (this.isModule(metadata) && !this.configuration.mainData.publicDocumentation) {
                         deps = {
                             name,
                             file: file,
@@ -379,7 +379,7 @@ export class Dependencies {
                             deps.implements = IO.implements;
                         }
                         if (this.configuration.mainData.publicDocumentation) {
-                            this.filterComponentContent(deps, node);
+                            this.filterComponentContent(deps);
                             if (deps.propertiesClass.length != 0 || deps.methodsClass.length != 0 || deps.outputsClass.length != 0) {
                                 $componentsTreeEngine.addComponent(deps);
                                 outputSymbols['components'].push(deps);
@@ -404,9 +404,19 @@ export class Dependencies {
                         if (IO.constructor) {
                             deps.constructorObj = IO.constructor;
                         }
-                        outputSymbols['injectables'].push(deps);
+
+                        if (this.configuration.mainData.publicDocumentation) {
+                            this.filterInjectableContent(deps);      
+                            if(deps.methods.length !== 0 || deps.properties.length !== 0){
+                                outputSymbols['injectables'].push(deps);
+                            }
+                        }
+                        else{
+                            outputSymbols['injectables'].push(deps);
+                        }
+
                     }
-                    else if (this.isPipe(metadata)) {
+                    else if (this.isPipe(metadata) && !this.configuration.mainData.publicDocumentation) {
                         deps = {
                             name,
                             file: file,
@@ -419,7 +429,7 @@ export class Dependencies {
                         }
                         outputSymbols['pipes'].push(deps);
                     }
-                    else if (this.isDirective(metadata)) {
+                    else if (this.isDirective(metadata) && !this.configuration.mainData.publicDocumentation) {
                         if (props.length === 0) return;
                         deps = {
                             name,
@@ -495,7 +505,7 @@ export class Dependencies {
                     }
                     this.debug(deps);
                     outputSymbols['classes'].push(deps);
-                } else if (node.symbol.flags === ts.SymbolFlags.Interface) {
+                } else if (node.symbol.flags === ts.SymbolFlags.Interface && !this.configuration.mainData.publicDocumentation) {
                     let name = this.getSymboleName(node);
                     let IO = this.getInterfaceIO(file, srcFile, node);
                     deps = {
@@ -696,26 +706,18 @@ export class Dependencies {
         outputSymbols['classes'].push(deps);
     }
 
-    private getAllowedList(node): string[] {
-        let allowed: string[] = [];
-
-        for (let member of node.members) {
-            let name = (member.symbol && member.symbol.name) || (member.name && member.name.text);
-            if (name == "AllowedMembers") {
-                let children = member.initializer.properties;
-                for (let child of children) {
-                    if (child.name.text == "Proxy" || child.name.text == "Config") {
-                        for (let prop of child.initializer.elements)
-                            allowed.push(prop.text);
-                    }
+    private IsAllowedScripting(decorators: any[]): boolean {
+        if (decorators && decorators.length > 0) {
+            for (let decorator of decorators) {
+                if (decorator.name === "Scripting") {
+                    return true;
                 }
             }
         }
-        return allowed;
+        return false;
     }
 
-    private filterComponentContent(deps: Deps, node) {
-        let allowedList: string[] = this.getAllowedList(node);
+    private filterComponentContent(deps: Deps) {
         let filteredProperties: object[] = [];
         let filteredMethods: object[] = [];
         let filteredOutputs: object[] = [];
@@ -723,21 +725,22 @@ export class Dependencies {
         deps.propertiesClass = deps.propertiesClass.concat(deps.inputsClass);
 
         for (let prop of deps.propertiesClass) {
-            for (let allowedItem of allowedList) {
-                if (prop.name == allowedItem)
-                    filteredProperties.push(prop);
+            if (this.IsAllowedScripting(prop.decorators)) {             
+                prop.decorators = [];
+                filteredProperties.push(prop);
             }
         }
+
         for (let method of deps.methodsClass) {
-            for (let allowedItem of allowedList) {
-                if (method.name == allowedItem)
-                    filteredMethods.push(method);
+            if (this.IsAllowedScripting(method.decorators)) {        
+                method.decorators = [];
+                filteredMethods.push(method);
             }
         }
         for (let output of deps.outputsClass) {
-            for (let allowedItem of allowedList) {
-                if (output.name == allowedItem)
-                    filteredOutputs.push(output);
+            if (this.IsAllowedScripting(output.decorators)) {
+                output.decorators = [];
+                filteredOutputs.push(output);
             }
         }
 
@@ -757,6 +760,30 @@ export class Dependencies {
         deps.constructorObj = null;
         deps.file = '';
         deps.displayMetadata = false;
+    }
+
+    private filterInjectableContent(deps: Deps){
+        let filteredProperties: object[] = [];
+        let filteredMethods: object[] = [];
+
+        for (let prop of deps.properties) {
+            if (this.IsAllowedScripting(prop.decorators)) {
+                prop.decorators = [];
+                filteredProperties.push(prop);
+            }
+        }
+
+        for (let method of deps.methods) {
+            if (this.IsAllowedScripting(method.decorators)) {
+                method.decorators = [];
+                filteredMethods.push(method);
+            }
+        }
+     
+        deps.properties = filteredProperties;
+        deps.methods = filteredMethods;
+        deps.constructorObj = null;
+        deps.file = '';
     }
 
     private debug(deps: Deps) {
