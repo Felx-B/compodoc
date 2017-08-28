@@ -13,6 +13,7 @@ import { generate } from './codegen';
 import { stripBom, hasBom, cleanLifecycleHooksFromMethods } from '../../utils/utils';
 import { Configuration } from '../configuration';
 import { $componentsTreeEngine } from '../engines/components-tree.engine';
+import { SfkFilters } from './sfk_filters';
 
 //import * as ts from "../../../node_modules/typescript/lib/typescript";
 import * as ts from "typescript";
@@ -109,6 +110,7 @@ export class Dependencies {
     private __nsModule: any = {};
     private unknown = '???';
     private configuration = Configuration.getInstance();
+    private filters: SfkFilters;
 
     constructor(files: string[], options: any) {
         this.files = files;
@@ -119,6 +121,7 @@ export class Dependencies {
         };
         this.program = ts.createProgram(this.files, transpileOptions, compilerHost(transpileOptions));
         this.typeChecker = this.program.getTypeChecker();
+        this.filters = new SfkFilters();
     }
 
     getDependencies() {
@@ -380,7 +383,7 @@ export class Dependencies {
                             deps.implements = IO.implements;
                         }
                         if (this.configuration.mainData.publicDocumentation) {
-                            this.filterComponentContent(deps);
+                            this.filters.filterComponentContent(deps);
                             if (deps.propertiesClass.length != 0 || deps.methodsClass.length != 0 || deps.outputsClass.length != 0) {
                                 $componentsTreeEngine.addComponent(deps);
                                 outputSymbols['components'].push(deps);
@@ -407,7 +410,7 @@ export class Dependencies {
                         }
 
                         if (this.configuration.mainData.publicDocumentation) {
-                            this.filterInjectableContent(deps);
+                            this.filters.filterInjectableContent(deps);
                             if (deps.methods.length !== 0 || deps.properties.length !== 0) {
                                 outputSymbols['injectables'].push(deps);
                             }
@@ -507,7 +510,7 @@ export class Dependencies {
                     this.debug(deps);
 
                     if (this.configuration.mainData.publicDocumentation) {
-                        this.filterInjectableContent(deps);
+                        this.filters.filterClassContent(deps);
                         if (deps.methods.length !== 0 || deps.properties.length !== 0) {
                             outputSymbols['classes'].push(deps);
                         }
@@ -716,98 +719,7 @@ export class Dependencies {
             deps.implements = IO.implements;
         }
         this.debug(deps);
-        // if (this.configuration.mainData.publicDocumentation) {
-        //     this.filterInjectableContent(deps);
-        //     if (deps.methods.length !== 0 || deps.properties.length !== 0) {
-        //         outputSymbols['classes'].push(deps);
-        //     }
-        // } else {
-        //     outputSymbols['classes'].push(deps);
-        // }
-    }
-
-    private IsAllowedScripting(decorators: any[]): boolean {
-        if (decorators && decorators.length > 0) {
-            for (let decorator of decorators) {
-                if (decorator.name === "Scripting") {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private filterComponentContent(deps: Deps) {
-        let filteredProperties: object[] = [];
-        let filteredMethods: object[] = [];
-        let filteredOutputs: object[] = [];
-        //Set Inputs as properties
-        deps.propertiesClass = deps.propertiesClass.concat(deps.inputsClass);
-
-        for (let prop of deps.propertiesClass) {
-            if (this.IsAllowedScripting(prop.decorators)) {
-                prop.decorators = [];
-                filteredProperties.push(prop);
-            }
-        }
-
-        for (let method of deps.methodsClass) {
-            if (this.IsAllowedScripting(method.decorators)) {
-                method.decorators = [];
-                filteredMethods.push(method);
-            }
-        }
-        for (let output of deps.outputsClass) {
-            if (this.IsAllowedScripting(output.decorators)) {
-                output.decorators = [];
-                filteredOutputs.push(output);
-            }
-        }
-
-        deps.propertiesClass = filteredProperties;
-        deps.methodsClass = filteredMethods;
-        deps.outputsClass = filteredOutputs;
-        deps.inputsClass = [];
-        deps.implements = [];
-        //deps.extends = [];
-        deps.styles = null;
-        deps.selector = null;
-        deps.template = null;
-        deps.templateUrl = [];
-        deps.styles = [];
-        deps.styleUrls = [];
-        deps.providers = [];
-        deps.constructorObj = null;
-        deps.file = '';
-        deps.displayMetadata = false;
-    }
-
-    private filterInjectableContent(deps: Deps) {
-        let filteredProperties: object[] = [];
-        let filteredMethods: object[] = [];
-
-        for (let prop of deps.properties) {
-            if (this.IsAllowedScripting(prop.decorators)) {
-                prop.decorators = [];
-                filteredProperties.push(prop);
-            }
-        }
-
-        for (let method of deps.methods) {
-            if (this.IsAllowedScripting(method.decorators)) {
-                method.decorators = [];
-                filteredMethods.push(method);
-            }
-        }
-
-        deps.properties = filteredProperties;
-        deps.methods = filteredMethods;
-        deps.constructorObj = null;
-        deps.file = '';
-    }
-
-    private filterClassContent(deps: Deps){
-
+        this.filters.populateClass(deps.name, deps);
     }
 
     private debug(deps: Deps) {

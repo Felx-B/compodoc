@@ -23,13 +23,14 @@
 
 <div class="tab-content">
     <div class="tab-pane fade active in" id="info">
+        {{#if class.file}}
         <p class="comment">
             <h3>File</h3>
         </p>
         <p class="comment">
             <code>{{class.file}}</code>
         </p>
-
+        {{/if}}
         {{#if class.description}}
             <p class="comment">
                 <h3>Description</h3>

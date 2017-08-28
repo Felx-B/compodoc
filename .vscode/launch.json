@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Sample Files",
+            "name": "Debug SFK",
             "type": "node",
             "request": "launch",
             "program": "${workspaceRoot}/node_modules/ts-node/dist/_bin.js",
@@ -16,7 +16,8 @@
                "../SFK/src/Sfk.WebComponents/src/tsconfig.app.json",
                 "--disableSourceCode",
                 "--disableGraph",
-                "--disableCoverage"
+                "--disableCoverage",
+                "--publicDocumentation"
             ],
             "cwd": "${workspaceRoot}",
             "protocol": "inspector"
