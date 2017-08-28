@@ -28,6 +28,7 @@ export class HtmlEngine {
             'pipe',
             'classes',
             'class',
+            'enum',
 	        'interface',
             'routes',
             'search-results',

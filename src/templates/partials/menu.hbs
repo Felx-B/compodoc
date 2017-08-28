@@ -190,6 +190,33 @@
             </ul>
         </li>
         {{/if}}
+        {{#if enums}}
+        <li class="chapter">
+            <div class="simple menu-toggler" data-toggle="collapse"
+                {{#compare menu "===" 'normal' }}
+                    data-target="#enums-links"
+                {{else}}
+                    data-target="#xs-enums-links"
+                {{/compare}}>
+                <span class="fa fa-list-ul"></span>
+                <span>Enums</span>
+                <span class="fa {{#isNotToggle 'enums'}}fa-angle-up{{else}}fa-angle-down{{/isNotToggle}}"></span>
+            </div>
+            <ul class="links collapse {{#isNotToggle 'enums'}}in{{/isNotToggle}}"
+                {{#compare menu "===" 'normal' }}
+                    id="enums-links"
+                {{else}}
+                    id="xs-enums-links"
+                {{/compare}}>
+                {{#each enums}}
+                    <li class="link">
+                        <a href="{{relativeURL ../depth 'enums'}}enums/{{name}}.html" {{#compare ../name "===" name }} data-type="entity-link" class="active" {{/compare}}>{{ name }}</a>
+                    </li>
+                {{/each}}
+            </ul>
+        </li>
+        {{/if}}
+
 
         {{#if injectables}}
         <li class="chapter">

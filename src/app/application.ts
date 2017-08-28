@@ -24,10 +24,10 @@ import { cleanNameWithoutSpaceAndToLowerCase, findMainSourceFolder } from '../ut
 import { promiseSequential } from '../utils/promise-sequential';
 
 const glob: any = require('glob'),
-      ts = require('typescript'),
-      _ = require('lodash'),
-      marked = require('marked'),
-      chokidar = require('chokidar');
+    ts = require('typescript'),
+    _ = require('lodash'),
+    marked = require('marked'),
+    chokidar = require('chokidar');
 
 let pkg = require('../package.json'),
     cwd = process.cwd(),
@@ -54,7 +54,7 @@ export class Application {
     /**
      * Compodoc configuration local reference
      */
-    configuration:ConfigurationInterface;
+    configuration: ConfigurationInterface;
     /**
      * Boolean for watching status
      * @type {boolean}
@@ -66,19 +66,19 @@ export class Application {
      *
      * @param options An object containing the options that should be used.
      */
-    constructor(options?:Object) {
+    constructor(options?: Object) {
         this.configuration = Configuration.getInstance();
 
-        for (let option in options ) {
-            if(typeof this.configuration.mainData[option] !== 'undefined') {
+        for (let option in options) {
+            if (typeof this.configuration.mainData[option] !== 'undefined') {
                 this.configuration.mainData[option] = options[option];
             }
             // For documentationMainName, process it outside the loop, for handling conflict with pages name
-            if(option === 'name') {
+            if (option === 'name') {
                 this.configuration.mainData['documentationMainName'] = options[option];
             }
             // For documentationMainName, process it outside the loop, for handling conflict with pages name
-            if(option === 'silent') {
+            if (option === 'silent') {
                 logger.silent = false;
             }
         }
@@ -107,7 +107,7 @@ export class Application {
      * Store files for initial processing
      * @param  {Array<string>} files Files found during source folder and tsconfig scan
      */
-    setFiles(files:Array<string>) {
+    setFiles(files: Array<string>) {
         this.files = files;
     }
 
@@ -115,7 +115,7 @@ export class Application {
      * Store files for watch processing
      * @param  {Array<string>} files Files found during source folder and tsconfig scan
      */
-    setUpdatedFiles(files:Array<string>) {
+    setUpdatedFiles(files: Array<string>) {
         this.updatedFiles = files;
     }
 
@@ -192,52 +192,52 @@ export class Application {
 
         return new Promise((resolve, reject) => {
             let i = 0,
-            markdowns = ['readme', 'changelog', 'contributing', 'license', 'todo'],
-            numberOfMarkdowns = 5,
-            loop = () => {
-                if (i < numberOfMarkdowns) {
-                    $markdownengine.getTraditionalMarkdown(markdowns[i].toUpperCase()).then((readmeData: string) => {
-                        this.configuration.addPage({
-                            name: (markdowns[i] === 'readme') ? 'index' : markdowns[i],
-                            context: 'getting-started',
-                            markdown: readmeData,
-                            depth: 0,
-                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-                        });
-                        if (markdowns[i] === 'readme') {
-                            this.configuration.mainData.readme = true;
+                markdowns = ['readme', 'changelog', 'contributing', 'license', 'todo'],
+                numberOfMarkdowns = 5,
+                loop = () => {
+                    if (i < numberOfMarkdowns) {
+                        $markdownengine.getTraditionalMarkdown(markdowns[i].toUpperCase()).then((readmeData: string) => {
                             this.configuration.addPage({
-                                name: 'overview',
-                                context: 'overview',
-                                pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-                            });
-                        } else {
-                            this.configuration.mainData.markdowns.push({
-                                name: markdowns[i],
-                                uppername: markdowns[i].toUpperCase(),
+                                name: (markdowns[i] === 'readme') ? 'index' : markdowns[i],
+                                context: 'getting-started',
+                                markdown: readmeData,
                                 depth: 0,
                                 pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
-                            })
-                        }
-                        logger.info(`${markdowns[i].toUpperCase()}.md file found`);
-                        i++;
-                        loop();
-                    }, (errorMessage) => {
-                        logger.warn(errorMessage);
-                        logger.warn(`Continuing without ${markdowns[i].toUpperCase()}.md file`);
-                        if (markdowns[i] === 'readme') {
-                            this.configuration.addPage({
-                                name: 'index',
-                                context: 'overview'
                             });
-                        }
-                        i++;
-                        loop();
-                    });
-                } else {
-                    resolve();
-                }
-            };
+                            if (markdowns[i] === 'readme') {
+                                this.configuration.mainData.readme = true;
+                                this.configuration.addPage({
+                                    name: 'overview',
+                                    context: 'overview',
+                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+                                });
+                            } else {
+                                this.configuration.mainData.markdowns.push({
+                                    name: markdowns[i],
+                                    uppername: markdowns[i].toUpperCase(),
+                                    depth: 0,
+                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.ROOT
+                                })
+                            }
+                            logger.info(`${markdowns[i].toUpperCase()}.md file found`);
+                            i++;
+                            loop();
+                        }, (errorMessage) => {
+                            logger.warn(errorMessage);
+                            logger.warn(`Continuing without ${markdowns[i].toUpperCase()}.md file`);
+                            if (markdowns[i] === 'readme') {
+                                this.configuration.addPage({
+                                    name: 'index',
+                                    context: 'overview'
+                                });
+                            }
+                            i++;
+                            loop();
+                        });
+                    } else {
+                        resolve();
+                    }
+                };
             loop();
         });
     }
@@ -267,9 +267,9 @@ export class Application {
     getMicroDependenciesData() {
         logger.info('Get diff dependencies data');
         let crawler = new Dependencies(
-          this.updatedFiles, {
-            tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
-          }
+            this.updatedFiles, {
+                tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
+            }
         );
 
         let dependenciesData = crawler.getDependencies();
@@ -307,9 +307,9 @@ export class Application {
         logger.info('Get dependencies data');
 
         let crawler = new Dependencies(
-          this.files, {
-            tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
-          }
+            this.files, {
+                tsconfigDirectory: path.dirname(this.configuration.mainData.tsconfig)
+            }
         );
 
         let dependenciesData = crawler.getDependencies();
@@ -351,6 +351,11 @@ export class Application {
             actions.push(() => { return this.prepareClasses(); });
         }
 
+        if (diffCrawledData.enums.length > 0) {
+            actions.push(() => { return this.prepareEnums(); });
+        }
+
+
         if (diffCrawledData.interfaces.length > 0) {
             actions.push(() => { return this.prepareInterfaces(); });
         }
@@ -359,7 +364,7 @@ export class Application {
             diffCrawledData.miscellaneous.functions.length > 0 ||
             diffCrawledData.miscellaneous.typealiases.length > 0 ||
             diffCrawledData.miscellaneous.enumerations.length > 0 ||
-            diffCrawledData.miscellaneous.types.length > 0 ) {
+            diffCrawledData.miscellaneous.types.length > 0) {
             actions.push(() => { return this.prepareMiscellaneous(); });
         }
 
@@ -403,6 +408,10 @@ export class Application {
             actions.push(() => { return this.prepareClasses(); });
         }
 
+        if ($dependenciesEngine.enums.length > 0) {
+            actions.push(() => { return this.prepareEnums(); });
+        }
+
         if ($dependenciesEngine.interfaces.length > 0) {
             actions.push(() => { return this.prepareInterfaces(); });
         }
@@ -411,7 +420,7 @@ export class Application {
             $dependenciesEngine.miscellaneous.functions.length > 0 ||
             $dependenciesEngine.miscellaneous.typealiases.length > 0 ||
             $dependenciesEngine.miscellaneous.enumerations.length > 0 ||
-            $dependenciesEngine.miscellaneous.types.length > 0 ) {
+            $dependenciesEngine.miscellaneous.types.length > 0) {
             actions.push(() => { return this.prepareMiscellaneous(); });
         }
 
@@ -438,67 +447,67 @@ export class Application {
         //For each file, add to this.configuration.mainData.additionalPages
         //Each file will be converted to html page, inside COMPODOC_DEFAULTS.additionalEntryPath
         return new Promise((resolve, reject) => {
-           $fileengine.get(this.configuration.mainData.includes + path.sep + 'summary.json').then((summaryData) => {
-               logger.info('Additional documentation: summary.json file found');
+            $fileengine.get(this.configuration.mainData.includes + path.sep + 'summary.json').then((summaryData) => {
+                logger.info('Additional documentation: summary.json file found');
 
-               let parsedSummaryData = JSON.parse(summaryData),
-                   i = 0,
-                   len = parsedSummaryData.length,
-                   loop = () => {
-                      if( i <= len-1) {
-                          $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].file).then((markedData) => {
-                              this.configuration.addAdditionalPage({
-                                  name: parsedSummaryData[i].title,
-                                  filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
-                                  context: 'additional-page',
-                                  path: this.configuration.mainData.includesFolder,
-                                  additionalPage: markedData,
-                                  depth: 1,
-                                  pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
-                              });
+                let parsedSummaryData = JSON.parse(summaryData),
+                    i = 0,
+                    len = parsedSummaryData.length,
+                    loop = () => {
+                        if (i <= len - 1) {
+                            $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].file).then((markedData) => {
+                                this.configuration.addAdditionalPage({
+                                    name: parsedSummaryData[i].title,
+                                    filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
+                                    context: 'additional-page',
+                                    path: this.configuration.mainData.includesFolder,
+                                    additionalPage: markedData,
+                                    depth: 1,
+                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                                });
 
-                              if (parsedSummaryData[i].children && parsedSummaryData[i].children.length > 0) {
-                                  let j = 0,
-                                      leng = parsedSummaryData[i].children.length,
-                                    loopChild = () => {
-                                        if( j <= leng-1) {
-                                            $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].children[j].file).then((markedData) => {
-                                                this.configuration.addAdditionalPage({
-                                                    name: parsedSummaryData[i].children[j].title,
-                                                    filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].children[j].title),
-                                                    context: 'additional-page',
-                                                    path: this.configuration.mainData.includesFolder + '/' + cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
-                                                    additionalPage: markedData,
-                                                    depth: 2,
-                                                    pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                                if (parsedSummaryData[i].children && parsedSummaryData[i].children.length > 0) {
+                                    let j = 0,
+                                        leng = parsedSummaryData[i].children.length,
+                                        loopChild = () => {
+                                            if (j <= leng - 1) {
+                                                $markdownengine.get(this.configuration.mainData.includes + path.sep + parsedSummaryData[i].children[j].file).then((markedData) => {
+                                                    this.configuration.addAdditionalPage({
+                                                        name: parsedSummaryData[i].children[j].title,
+                                                        filename: cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].children[j].title),
+                                                        context: 'additional-page',
+                                                        path: this.configuration.mainData.includesFolder + '/' + cleanNameWithoutSpaceAndToLowerCase(parsedSummaryData[i].title),
+                                                        additionalPage: markedData,
+                                                        depth: 2,
+                                                        pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                                                    });
+                                                    j++;
+                                                    loopChild();
+                                                }, (e) => {
+                                                    logger.error(e);
                                                 });
-                                                j++;
-                                                loopChild();
-                                            }, (e) => {
-                                                logger.error(e);
-                                            });
-                                        } else {
-                                            i++;
-                                            loop();
+                                            } else {
+                                                i++;
+                                                loop();
+                                            }
                                         }
-                                    }
                                     loopChild();
                                 } else {
                                     i++;
                                     loop();
                                 }
-                          }, (e) => {
-                              logger.error(e);
-                          });
-                      } else {
-                          resolve();
-                      }
-                  };
-               loop();
-           }, (errorMessage) => {
-               logger.error(errorMessage);
-               reject('Error during Additional documentation generation');
-           });
+                            }, (e) => {
+                                logger.error(e);
+                            });
+                        } else {
+                            resolve();
+                        }
+                    };
+                loop();
+            }, (errorMessage) => {
+                logger.error(errorMessage);
+                reject('Error during Additional documentation generation');
+            });
         });
     }
 
@@ -544,7 +553,7 @@ export class Application {
 
             let len = this.configuration.mainData.modules.length,
                 loop = () => {
-                    if(i < len) {
+                    if (i < len) {
                         if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.modules[i].file)) {
                             logger.info(` ${this.configuration.mainData.modules[i].name} has a README file, include it`);
                             let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.modules[i].file);
@@ -576,7 +585,7 @@ export class Application {
             let i = 0,
                 len = this.configuration.mainData.pipes.length,
                 loop = () => {
-                    if(i < len) {
+                    if (i < len) {
                         if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.pipes[i].file)) {
                             logger.info(` ${this.configuration.mainData.pipes[i].name} has a README file, include it`);
                             let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.pipes[i].file);
@@ -608,7 +617,7 @@ export class Application {
             let i = 0,
                 len = this.configuration.mainData.classes.length,
                 loop = () => {
-                    if(i < len) {
+                    if (i < len) {
                         if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.classes[i].file)) {
                             logger.info(` ${this.configuration.mainData.classes[i].name} has a README file, include it`);
                             let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.classes[i].file);
@@ -632,6 +641,38 @@ export class Application {
         });
     }
 
+    prepareEnums = (enu?) => {
+        logger.info('Prepare enums');
+        this.configuration.mainData.enums = (enu) ? enu : $dependenciesEngine.getEnums();
+
+        return new Promise((resolve, reject) => {
+            let i = 0,
+                len = this.configuration.mainData.enums.length,
+                loop = () => {
+                    if (i < len) {
+                        if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.enums[i].file)) {
+                            logger.info(` ${this.configuration.mainData.enums[i].name} has a README file, include it`);
+                            let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.enums[i].file);
+                            this.configuration.mainData.enums[i].readme = marked(readme);
+                        }
+                        this.configuration.addPage({
+                            path: 'enums',
+                            name: this.configuration.mainData.enums[i].name,
+                            context: 'enum',
+                            class: this.configuration.mainData.enums[i],
+                            depth: 1,
+                            pageType: COMPODOC_DEFAULTS.PAGE_TYPES.INTERNAL
+                        });
+                        i++;
+                        loop();
+                    } else {
+                        resolve();
+                    }
+                }
+            loop();
+        });
+    };
+
     prepareInterfaces(someInterfaces?) {
         logger.info('Prepare interfaces');
         this.configuration.mainData.interfaces = (someInterfaces) ? someInterfaces : $dependenciesEngine.getInterfaces();
@@ -640,7 +681,7 @@ export class Application {
             let i = 0,
                 len = this.configuration.mainData.interfaces.length,
                 loop = () => {
-                    if(i < len) {
+                    if (i < len) {
                         if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.interfaces[i].file)) {
                             logger.info(` ${this.configuration.mainData.interfaces[i].name} has a README file, include it`);
                             let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.interfaces[i].file);
@@ -687,7 +728,7 @@ export class Application {
             let i = 0,
                 len = this.configuration.mainData.components.length,
                 loop = () => {
-                    if( i <= len-1) {
+                    if (i <= len - 1) {
                         let dirname = path.dirname(this.configuration.mainData.components[i].file),
                             handleTemplateurl = () => {
                                 return new Promise((resolve, reject) => {
@@ -770,7 +811,7 @@ export class Application {
             let i = 0,
                 len = this.configuration.mainData.directives.length,
                 loop = () => {
-                    if(i < len) {
+                    if (i < len) {
                         if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.directives[i].file)) {
                             logger.info(` ${this.configuration.mainData.directives[i].name} has a README file, include it`);
                             let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.directives[i].file);
@@ -803,7 +844,7 @@ export class Application {
             let i = 0,
                 len = this.configuration.mainData.injectables.length,
                 loop = () => {
-                    if(i < len) {
+                    if (i < len) {
                         if ($markdownengine.hasNeighbourReadmeFile(this.configuration.mainData.injectables[i].file)) {
                             logger.info(` ${this.configuration.mainData.injectables[i].name} has a README file, include it`);
                             let readme = $markdownengine.readNeighbourReadmeFile(this.configuration.mainData.injectables[i].file);
@@ -843,7 +884,7 @@ export class Application {
             RouterParser.generateRoutesIndex(this.configuration.mainData.output, this.configuration.mainData.routes).then(() => {
                 logger.info(' Routes index generated');
                 resolve();
-            }, (e) => {
+            }, (e) =>  {
                 logger.error(e);
                 reject();
             });
@@ -860,7 +901,7 @@ export class Application {
              */
             var files = [],
                 totalProjectStatementDocumented = 0,
-                getStatus = function(percent) {
+                getStatus = function (percent) {
                     var status;
                     if (percent <= 25) {
                         status = 'low';
@@ -879,14 +920,14 @@ export class Application {
                     !component.methodsClass ||
                     !component.inputsClass ||
                     !component.outputsClass) {
-                        return;
-                    }
-                let cl:any = {
-                        filePath: component.file,
-                        type: component.type,
-                        linktype: component.type,
-                        name: component.name
-                    },
+                    return;
+                }
+                let cl: any = {
+                    filePath: component.file,
+                    type: component.type,
+                    linktype: component.type,
+                    name: component.name
+                },
                     totalStatementDocumented = 0,
                     totalStatements = component.propertiesClass.length + component.methodsClass.length + component.inputsClass.length + component.outputsClass.length + 1; // +1 for component decorator comment
 
@@ -904,7 +945,7 @@ export class Application {
                     if (property.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(property.description && property.description !== '' && property.modifierKind !== 111) {
+                    if (property.description && property.description !== '' && property.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -912,7 +953,7 @@ export class Application {
                     if (method.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(method.description && method.description !== '' && method.modifierKind !== 111) {
+                    if (method.description && method.description !== '' && method.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -920,7 +961,7 @@ export class Application {
                     if (input.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(input.description && input.description !== '' && input.modifierKind !== 111) {
+                    if (input.description && input.description !== '' && input.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -928,13 +969,13 @@ export class Application {
                     if (output.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(output.description && output.description !== '' && output.modifierKind !== 111) {
+                    if (output.description && output.description !== '' && output.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
 
                 cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-                if(totalStatements === 0) {
+                if (totalStatements === 0) {
                     cl.coveragePercent = 0;
                 }
                 cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
@@ -945,14 +986,14 @@ export class Application {
             _.forEach(this.configuration.mainData.classes, (classe) => {
                 if (!classe.properties ||
                     !classe.methods) {
-                        return;
-                    }
-                let cl:any = {
-                        filePath: classe.file,
-                        type: 'class',
-                        linktype: 'classe',
-                        name: classe.name
-                    },
+                    return;
+                }
+                let cl: any = {
+                    filePath: classe.file,
+                    type: 'class',
+                    linktype: 'classe',
+                    name: classe.name
+                },
                     totalStatementDocumented = 0,
                     totalStatements = classe.properties.length + classe.methods.length + 1; // +1 for class itself
 
@@ -970,7 +1011,7 @@ export class Application {
                     if (property.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(property.description && property.description !== '' && property.modifierKind !== 111) {
+                    if (property.description && property.description !== '' && property.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -978,13 +1019,13 @@ export class Application {
                     if (method.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(method.description && method.description !== '' && method.modifierKind !== 111) {
+                    if (method.description && method.description !== '' && method.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
 
                 cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-                if(totalStatements === 0) {
+                if (totalStatements === 0) {
                     cl.coveragePercent = 0;
                 }
                 cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
@@ -995,14 +1036,14 @@ export class Application {
             _.forEach(this.configuration.mainData.injectables, (injectable) => {
                 if (!injectable.properties ||
                     !injectable.methods) {
-                        return;
-                    }
-                let cl:any = {
-                        filePath: injectable.file,
-                        type: injectable.type,
-                        linktype: injectable.type,
-                        name: injectable.name
-                    },
+                    return;
+                }
+                let cl: any = {
+                    filePath: injectable.file,
+                    type: injectable.type,
+                    linktype: injectable.type,
+                    name: injectable.name
+                },
                     totalStatementDocumented = 0,
                     totalStatements = injectable.properties.length + injectable.methods.length + 1; // +1 for injectable itself
 
@@ -1020,7 +1061,7 @@ export class Application {
                     if (property.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(property.description && property.description !== '' && property.modifierKind !== 111) {
+                    if (property.description && property.description !== '' && property.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -1028,13 +1069,13 @@ export class Application {
                     if (method.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(method.description && method.description !== '' && method.modifierKind !== 111) {
+                    if (method.description && method.description !== '' && method.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
 
                 cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-                if(totalStatements === 0) {
+                if (totalStatements === 0) {
                     cl.coveragePercent = 0;
                 }
                 cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
@@ -1045,14 +1086,14 @@ export class Application {
             _.forEach(this.configuration.mainData.interfaces, (inter) => {
                 if (!inter.properties ||
                     !inter.methods) {
-                        return;
-                    }
-                let cl:any = {
-                        filePath: inter.file,
-                        type: inter.type,
-                        linktype: inter.type,
-                        name: inter.name
-                    },
+                    return;
+                }
+                let cl: any = {
+                    filePath: inter.file,
+                    type: inter.type,
+                    linktype: inter.type,
+                    name: inter.name
+                },
                     totalStatementDocumented = 0,
                     totalStatements = inter.properties.length + inter.methods.length + 1; // +1 for interface itself
 
@@ -1070,7 +1111,7 @@ export class Application {
                     if (property.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(property.description && property.description !== '' && property.modifierKind !== 111) {
+                    if (property.description && property.description !== '' && property.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
@@ -1078,13 +1119,13 @@ export class Application {
                     if (method.modifierKind === 111) { // Doesn't handle private for coverage
                         totalStatements -= 1;
                     }
-                    if(method.description && method.description !== '' && method.modifierKind !== 111) {
+                    if (method.description && method.description !== '' && method.modifierKind !== 111) {
                         totalStatementDocumented += 1;
                     }
                 });
 
                 cl.coveragePercent = Math.floor((totalStatementDocumented / totalStatements) * 100);
-                if(totalStatements === 0) {
+                if (totalStatements === 0) {
                     cl.coveragePercent = 0;
                 }
                 cl.coverageCount = totalStatementDocumented + '/' + totalStatements;
@@ -1093,12 +1134,12 @@ export class Application {
                 files.push(cl);
             });
             _.forEach(this.configuration.mainData.pipes, (pipe) => {
-                let cl:any = {
-                        filePath: pipe.file,
-                        type: pipe.type,
-                        linktype: pipe.type,
-                        name: pipe.name
-                    },
+                let cl: any = {
+                    filePath: pipe.file,
+                    type: pipe.type,
+                    linktype: pipe.type,
+                    name: pipe.name
+                },
                     totalStatementDocumented = 0,
                     totalStatements = 1;
                 if (pipe.description && pipe.description !== '') {
@@ -1149,7 +1190,7 @@ export class Application {
                     logger.info('Process page', page.name);
                     let htmlData = $htmlengine.render(this.configuration.mainData, page)
                     let finalPath = this.configuration.mainData.output;
-                    if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                    if (this.configuration.mainData.output.lastIndexOf('/') === -1) {
                         finalPath += '/';
                     }
                     if (page.path) {
@@ -1181,13 +1222,13 @@ export class Application {
                     }
                     this.processResources();
                 }
-            }, (e) =>  {
+            }, (e) => {
                 logger.error(e);
             });
         })
-        .catch((e) => {
-            logger.error(e);
-        });
+            .catch((e) => {
+                logger.error(e);
+            });
     }
 
     processAdditionalPages() {
@@ -1199,7 +1240,7 @@ export class Application {
                     logger.info('Process page', pages[i].name);
                     let htmlData = $htmlengine.render(this.configuration.mainData, pages[i])
                     let finalPath = this.configuration.mainData.output;
-                    if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                    if (this.configuration.mainData.output.lastIndexOf('/') === -1) {
                         finalPath += '/';
                     }
                     if (pages[i].path) {
@@ -1227,13 +1268,13 @@ export class Application {
                     this.processAssetsFolder();
                 }
                 this.processResources();
-            }, (e) => {
+            }, (e) =>  {
                 logger.error(e);
             });
         })
-        .catch((e) => {
-            logger.error(e);
-        });
+            .catch((e) => {
+                logger.error(e);
+            });
     }
 
     processAssetsFolder() {
@@ -1243,7 +1284,7 @@ export class Application {
             logger.error(`Provided assets folder ${this.configuration.mainData.assetsFolder} did not exist`);
         } else {
             fs.copy(path.resolve(this.configuration.mainData.assetsFolder), path.resolve(process.cwd() + path.sep + this.configuration.mainData.output + path.sep + this.configuration.mainData.assetsFolder), function (err) {
-                if(err) {
+                if (err) {
                     logger.error('Error during resources copy ', err);
                 }
             });
@@ -1265,7 +1306,7 @@ export class Application {
         let finalOutput = this.configuration.mainData.output.replace(process.cwd(), '');
 
         fs.copy(path.resolve(__dirname + '/../src/resources/'), path.resolve(process.cwd() + path.sep + finalOutput), (err) => {
-            if(err) {
+            if (err) {
                 logger.error('Error during resources copy ', err);
             }
             else {
@@ -1295,7 +1336,7 @@ export class Application {
             logger.info('Process main graph');
 
             let finalMainGraphPath = this.configuration.mainData.output;
-            if(finalMainGraphPath.lastIndexOf('/') === -1) {
+            if (finalMainGraphPath.lastIndexOf('/') === -1) {
                 finalMainGraphPath += '/';
             }
             finalMainGraphPath += 'graph';
@@ -1317,7 +1358,7 @@ export class Application {
                             return new Promise((resolve, reject) => {
                                 logger.info('Process module graph', modules[i].name);
                                 let finalPath = this.configuration.mainData.output;
-                                if(this.configuration.mainData.output.lastIndexOf('/') === -1) {
+                                if (this.configuration.mainData.output.lastIndexOf('/') === -1) {
                                     finalPath += '/';
                                 }
                                 finalPath += 'modules/' + modules[i].name;
@@ -1337,15 +1378,15 @@ export class Application {
                     ).then(() => {
                         this.processPages();
                     })
-                    .catch((e) => {
-                        logger.error(e);
-                    });
+                        .catch((e) => {
+                            logger.error(e);
+                        });
                 }
         }
     }
 
     runWebServer(folder) {
-        if(!this.isWatching) {
+        if (!this.isWatching) {
             LiveServer.start({
                 root: folder,
                 open: this.configuration.mainData.open,
@@ -1380,10 +1421,10 @@ export class Application {
         }
 
         let watcher = chokidar.watch(sources, {
-                awaitWriteFinish: true,
-                ignoreInitial: true,
-                ignored: /(spec|\.d)\.ts/
-            }),
+            awaitWriteFinish: true,
+            ignoreInitial: true,
+            ignored: /(spec|\.d)\.ts/
+        }),
             timerAddAndRemoveRef,
             timerChangeRef,
             waiterAddAndRemove = () => {
@@ -1447,12 +1488,12 @@ export class Application {
     /**
      * Return the application / root component instance.
      */
-    get application():Application {
+    get application(): Application {
         return this;
     }
 
 
-    get isCLI():boolean {
+    get isCLI(): boolean {
         return false;
     }
 }

@@ -6,7 +6,7 @@ import { MiscellaneousData } from '../interfaces/miscellaneous-data.interface';
 const _ = require('lodash');
 
 class DependenciesEngine {
-    private static _instance:DependenciesEngine = new DependenciesEngine();
+    private static _instance: DependenciesEngine = new DependenciesEngine();
 
     rawData: ParsedData;
     modules: Object[];
@@ -19,38 +19,38 @@ class DependenciesEngine {
     routes: Object[];
     pipes: Object[];
     classes: Object[];
+    enums: Object[];
     miscellaneous: MiscellaneousData;
 
     constructor() {
-        if(DependenciesEngine._instance){
+        if (DependenciesEngine._instance) {
             throw new Error('Error: Instantiation failed: Use DependenciesEngine.getInstance() instead of new.');
         }
         DependenciesEngine._instance = this;
     }
-    public static getInstance():DependenciesEngine
-    {
+    public static getInstance(): DependenciesEngine {
         return DependenciesEngine._instance;
     }
     cleanModules(modules) {
         let _m = modules,
             i = 0,
             len = modules.length;
-        for(i; i<len; i++) {
+        for (i; i < len; i++) {
             let j = 0,
                 leng = _m[i].declarations.length;
-            for(j; j<leng; j++) {
+            for (j; j < leng; j++) {
                 let k = 0,
                     lengt;
                 if (_m[i].declarations[j].jsdoctags) {
                     lengt = _m[i].declarations[j].jsdoctags.length;
-                    for(k; k<lengt; k++) {
+                    for (k; k < lengt; k++) {
                         delete _m[i].declarations[j].jsdoctags[k].parent;
                     }
                 }
                 if (_m[i].declarations[j].constructorObj) {
                     if (_m[i].declarations[j].constructorObj.jsdoctags) {
                         lengt = _m[i].declarations[j].constructorObj.jsdoctags.length;
-                        for(k; k<lengt; k++) {
+                        for (k; k < lengt; k++) {
                             delete _m[i].declarations[j].constructorObj.jsdoctags[k].parent;
                         }
                     }
@@ -58,14 +58,14 @@ class DependenciesEngine {
                 if (_m[i].declarations[j].methodsClass && _m[i].declarations[j].methodsClass.length > 0) {
                     let l = 0,
                         length = _m[i].declarations[j].methodsClass.length;
-                    for(l; l<length; l++) {
+                    for (l; l < length; l++) {
                         delete _m[i].declarations[j].methodsClass[l].jsdoctags;
                     }
                 }
                 if (_m[i].declarations[j].propertiesClass && _m[i].declarations[j].propertiesClass.length > 0) {
                     let l = 0,
                         length = _m[i].declarations[j].propertiesClass.length;
-                    for(l; l<length; l++) {
+                    for (l; l < length; l++) {
                         delete _m[i].declarations[j].propertiesClass[l].jsdoctags;
                     }
                 }
@@ -84,20 +84,21 @@ class DependenciesEngine {
         this.interfaces = _.sortBy(this.rawData.interfaces, ['name']);
         this.pipes = _.sortBy(this.rawData.pipes, ['name']);
         this.classes = _.sortBy(this.rawData.classes, ['name']);
+        this.enums = _.sortBy(this.rawData.enums, ['name']);
         this.miscellaneous = this.rawData.miscellaneous;
         this.prepareMiscellaneous();
         this.routes = this.rawData.routesTree;
         this.cleanRawModulesForOverview();
     }
     find(type: string) {
-        let finderInCompodocDependencies = function(data) {
+        let finderInCompodocDependencies = function (data) {
             let _result = {
-                    source: 'internal',
-                    data: null
-                },
+                source: 'internal',
+                data: null
+            },
                 i = 0,
                 len = data.length;
-            for (i; i<len; i++) {
+            for (i; i < len; i++) {
                 if (typeof type !== 'undefined') {
                     if (type.indexOf(data[i].name) !== -1) {
                         _result.data = data[i]
@@ -109,6 +110,7 @@ class DependenciesEngine {
             resultInCompodocInjectables = finderInCompodocDependencies(this.injectables),
             resultInCompodocInterfaces = finderInCompodocDependencies(this.interfaces),
             resultInCompodocClasses = finderInCompodocDependencies(this.classes),
+            resultInCompodocEnums = finderInCompodocDependencies(this.enums),
             resultInCompodocComponents = finderInCompodocDependencies(this.components),
             resultInAngularAPIs = finderInAngularAPIs(type)
 
@@ -118,6 +120,8 @@ class DependenciesEngine {
             return resultInCompodocInterfaces;
         } else if (resultInCompodocClasses.data !== null) {
             return resultInCompodocClasses;
+        } else if (resultInCompodocEnums.data !== null) {
+            return resultInCompodocEnums;
         } else if (resultInCompodocComponents.data !== null) {
             return resultInCompodocComponents;
         } else if (resultInAngularAPIs.data !== null) {
@@ -127,50 +131,56 @@ class DependenciesEngine {
     update(updatedData) {
         if (updatedData.modules.length > 0) {
             _.forEach(updatedData.modules, (module) => {
-                let _index = _.findIndex(this.modules, {'name': module.name});
+                let _index = _.findIndex(this.modules, { 'name': module.name });
                 this.modules[_index] = module;
             });
         }
         if (updatedData.components.length > 0) {
             _.forEach(updatedData.components, (component) => {
-                let _index = _.findIndex(this.components, {'name': component.name});
+                let _index = _.findIndex(this.components, { 'name': component.name });
                 this.components[_index] = component;
             });
         }
         if (updatedData.directives.length > 0) {
             _.forEach(updatedData.directives, (directive) => {
-                let _index = _.findIndex(this.directives, {'name': directive.name});
+                let _index = _.findIndex(this.directives, { 'name': directive.name });
                 this.directives[_index] = directive;
             });
         }
         if (updatedData.injectables.length > 0) {
             _.forEach(updatedData.injectables, (injectable) => {
-                let _index = _.findIndex(this.injectables, {'name': injectable.name});
+                let _index = _.findIndex(this.injectables, { 'name': injectable.name });
                 this.injectables[_index] = injectable;
             });
         }
         if (updatedData.interfaces.length > 0) {
             _.forEach(updatedData.interfaces, (int) => {
-                let _index = _.findIndex(this.interfaces, {'name': int.name});
+                let _index = _.findIndex(this.interfaces, { 'name': int.name });
                 this.interfaces[_index] = int;
             });
         }
         if (updatedData.pipes.length > 0) {
             _.forEach(updatedData.pipes, (pipe) => {
-                let _index = _.findIndex(this.pipes, {'name': pipe.name});
+                let _index = _.findIndex(this.pipes, { 'name': pipe.name });
                 this.pipes[_index] = pipe;
             });
         }
         if (updatedData.classes.length > 0) {
             _.forEach(updatedData.classes, (classe) => {
-                let _index = _.findIndex(this.classes, {'name': classe.name});
+                let _index = _.findIndex(this.classes, { 'name': classe.name });
                 this.classes[_index] = classe;
+            });
+        } 
+        if (updatedData.enums.length > 0) {
+            _.forEach(updatedData.enums, (enu) => {
+                let _index = _.findIndex(this.enums, { 'name': enu.name });
+                this.enums[_index] = enu;
             });
         }
         /**
          * Miscellaneous update
          */
-        if (updatedData.miscellaneous.variables.length > 0 ) {
+        if (updatedData.miscellaneous.variables.length > 0) {
             _.forEach(updatedData.miscellaneous.variables, (variable) => {
                 let _index = _.findIndex(this.miscellaneous.variables, {
                     'name': variable.name,
@@ -179,7 +189,7 @@ class DependenciesEngine {
                 this.miscellaneous.variables[_index] = variable;
             });
         }
-        if (updatedData.miscellaneous.functions.length > 0 ) {
+        if (updatedData.miscellaneous.functions.length > 0) {
             _.forEach(updatedData.miscellaneous.functions, (func) => {
                 let _index = _.findIndex(this.miscellaneous.functions, {
                     'name': func.name,
@@ -188,7 +198,7 @@ class DependenciesEngine {
                 this.miscellaneous.functions[_index] = func;
             });
         }
-        if (updatedData.miscellaneous.typealiases.length > 0 ) {
+        if (updatedData.miscellaneous.typealiases.length > 0) {
             _.forEach(updatedData.miscellaneous.typealiases, (typealias) => {
                 let _index = _.findIndex(this.miscellaneous.typealiases, {
                     'name': typealias.name,
@@ -197,7 +207,7 @@ class DependenciesEngine {
                 this.miscellaneous.typealiases[_index] = typealias;
             });
         }
-        if (updatedData.miscellaneous.enumerations.length > 0 ) {
+        if (updatedData.miscellaneous.enumerations.length > 0) {
             _.forEach(updatedData.miscellaneous.enumerations, (enumeration) => {
                 let _index = _.findIndex(this.miscellaneous.enumerations, {
                     'name': enumeration.name,
@@ -206,7 +216,7 @@ class DependenciesEngine {
                 this.miscellaneous.enumerations[_index] = enumeration;
             });
         }
-        if (updatedData.miscellaneous.types.length > 0 ) {
+        if (updatedData.miscellaneous.types.length > 0) {
             _.forEach(updatedData.miscellaneous.types, (typ) => {
                 let _index = _.findIndex(this.miscellaneous.types, {
                     'name': typ.name,
@@ -218,8 +228,8 @@ class DependenciesEngine {
         this.prepareMiscellaneous();
     }
     findInCompodoc(name: string) {
-        let mergedData = _.concat([], this.modules, this.components, this.directives, this.injectables, this.interfaces, this.pipes, this.classes),
-            result = _.find(mergedData, {'name': name});
+        let mergedData = _.concat([], this.modules, this.components, this.directives, this.injectables, this.interfaces, this.pipes, this.classes, this.enums),
+            result = _.find(mergedData, { 'name': name });
         return result || false;
     }
     cleanRawModulesForOverview() {
@@ -263,6 +273,9 @@ class DependenciesEngine {
     }
     getClasses() {
         return this.classes;
+    }
+    getEnums() {
+        return this.enums;
     }
     getMiscellaneous() {
         return this.miscellaneous;

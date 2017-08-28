@@ -6,6 +6,7 @@ export interface ParsedData {
     interfaces;
     pipes;
     classes;
+    enums;
     miscellaneous;
     routesTree;
 }

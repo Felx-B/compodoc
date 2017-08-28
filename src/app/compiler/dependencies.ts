@@ -130,6 +130,7 @@ export class Dependencies {
             'directives': [],
             'routes': [],
             'classes': [],
+            'enums': [],
             'interfaces': [],
             'miscellaneous': {
                 variables: [],
@@ -406,12 +407,12 @@ export class Dependencies {
                         }
 
                         if (this.configuration.mainData.publicDocumentation) {
-                            this.filterInjectableContent(deps);      
-                            if(deps.methods.length !== 0 || deps.properties.length !== 0){
+                            this.filterInjectableContent(deps);
+                            if (deps.methods.length !== 0 || deps.properties.length !== 0) {
                                 outputSymbols['injectables'].push(deps);
                             }
                         }
-                        else{
+                        else {
                             outputSymbols['injectables'].push(deps);
                         }
 
@@ -504,7 +505,18 @@ export class Dependencies {
                         deps.implements = IO.implements;
                     }
                     this.debug(deps);
-                    outputSymbols['classes'].push(deps);
+
+                    if (this.configuration.mainData.publicDocumentation) {
+                        this.filterInjectableContent(deps);
+                        if (deps.methods.length !== 0 || deps.properties.length !== 0) {
+                            outputSymbols['classes'].push(deps);
+                        }
+                    } else {
+                        outputSymbols['classes'].push(deps);
+                    }
+
+
+
                 } else if (node.symbol.flags === ts.SymbolFlags.Interface && !this.configuration.mainData.publicDocumentation) {
                     let name = this.getSymboleName(node);
                     let IO = this.getInterfaceIO(file, srcFile, node);
@@ -556,7 +568,7 @@ export class Dependencies {
                         description: this.visitEnumAndFunctionDeclarationDescription(node),
                         file: file
                     }
-                    outputSymbols['miscellaneous'].enumerations.push(deps);
+                    outputSymbols['enums'].push(deps);
                 }
             } else {
                 let IO = this.getRouteIO(file, srcFile);
@@ -664,7 +676,7 @@ export class Dependencies {
                         description: this.visitEnumAndFunctionDeclarationDescription(node),
                         file: file
                     }
-                    outputSymbols['miscellaneous'].enumerations.push(deps);
+                    outputSymbols['enums'].push(deps);
                 }
             }
         });
@@ -703,7 +715,14 @@ export class Dependencies {
             deps.implements = IO.implements;
         }
         this.debug(deps);
-        outputSymbols['classes'].push(deps);
+        // if (this.configuration.mainData.publicDocumentation) {
+        //     this.filterInjectableContent(deps);
+        //     if (deps.methods.length !== 0 || deps.properties.length !== 0) {
+        //         outputSymbols['classes'].push(deps);
+        //     }
+        // } else {
+        //     outputSymbols['classes'].push(deps);
+        // }
     }
 
     private IsAllowedScripting(decorators: any[]): boolean {
@@ -725,14 +744,14 @@ export class Dependencies {
         deps.propertiesClass = deps.propertiesClass.concat(deps.inputsClass);
 
         for (let prop of deps.propertiesClass) {
-            if (this.IsAllowedScripting(prop.decorators)) {             
+            if (this.IsAllowedScripting(prop.decorators)) {
                 prop.decorators = [];
                 filteredProperties.push(prop);
             }
         }
 
         for (let method of deps.methodsClass) {
-            if (this.IsAllowedScripting(method.decorators)) {        
+            if (this.IsAllowedScripting(method.decorators)) {
                 method.decorators = [];
                 filteredMethods.push(method);
             }
@@ -749,7 +768,7 @@ export class Dependencies {
         deps.outputsClass = filteredOutputs;
         deps.inputsClass = [];
         deps.implements = [];
-        deps.extends = [];
+        //deps.extends = [];
         deps.styles = null;
         deps.selector = null;
         deps.template = null;
@@ -762,7 +781,7 @@ export class Dependencies {
         deps.displayMetadata = false;
     }
 
-    private filterInjectableContent(deps: Deps){
+    private filterInjectableContent(deps: Deps) {
         let filteredProperties: object[] = [];
         let filteredMethods: object[] = [];
 
@@ -779,11 +798,15 @@ export class Dependencies {
                 filteredMethods.push(method);
             }
         }
-     
+
         deps.properties = filteredProperties;
         deps.methods = filteredMethods;
         deps.constructorObj = null;
         deps.file = '';
+    }
+
+    private filterClassContent(deps: Deps){
+
     }
 
     private debug(deps: Deps) {

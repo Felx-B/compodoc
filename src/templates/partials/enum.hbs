@@ -1,0 +1,29 @@
+<ol class="breadcrumb">
+    <li>Enums</li>
+    <li>{{name}}</li>
+</ol>
+
+
+<table class="table table-sm table-bordered">
+    <tbody>
+        {{#if class.description}}
+        <tr>
+            <td class="col-md-4">
+                <div class="io-description">{{{parseDescription description ../depth}}}</div>
+            </td>
+        </tr>
+        {{/if}} {{#each class.childs}} {{#if name}}
+        <tr>
+            <td class="col-md-4">
+                <b>{{name}}</b>
+            </td>
+        </tr>
+        {{/if}} {{#if value}}
+        <tr>
+            <td class="col-md-4">
+                <i>Value: </i><code>{{value}}</code>
+            </td>
+        </tr>
+        {{/if}} {{/each}}
+    </tbody>
+</table>

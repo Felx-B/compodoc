@@ -34,6 +34,7 @@ export class Configuration implements ConfigurationInterface {
         additionalPages: [],
         pipes: [],
         classes: [],
+        enums: [],
         interfaces: [],
         components: [],
         directives: [],

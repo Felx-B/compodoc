@@ -85,6 +85,13 @@
                         {{~> class data ~}}
                    {{/compare}}
 
+                   {{#compare data.context "===" 'enums'}}
+                        {{~> enums data ~}}
+                   {{/compare}}
+                   {{#compare data.context "===" 'enum'}}
+                        {{~> enum data ~}}
+                   {{/compare}}
+
                    {{#compare data.context "===" 'interface'}}
                         {{~> interface data ~}}
                    {{/compare}}
