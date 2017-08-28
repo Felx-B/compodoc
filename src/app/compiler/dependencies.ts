@@ -564,6 +564,7 @@ export class Dependencies {
                         name = node.name.text;
                     deps = {
                         name,
+                        type: 'enum',
                         childs: infos,
                         description: this.visitEnumAndFunctionDeclarationDescription(node),
                         file: file

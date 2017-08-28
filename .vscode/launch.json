@@ -16,8 +16,7 @@
                "../SFK/src/Sfk.WebComponents/src/tsconfig.app.json",
                 "--disableSourceCode",
                 "--disableGraph",
-                "--disableCoverage",
-                "--publicDocumentation"
+                "--disableCoverage"
             ],
             "cwd": "${workspaceRoot}",
             "protocol": "inspector"
