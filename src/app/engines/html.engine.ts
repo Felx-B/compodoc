@@ -32,6 +32,8 @@ export class HtmlEngine {
             'enum',
 	        'interface',
             'routes',
+            'index',
+            'index-directive',
             'search-results',
             'search-input',
             'link-type',
@@ -40,8 +42,12 @@ export class HtmlEngine {
             'block-property',
             'block-index',
             'block-constructor',
+            'block-typealias',
             'coverage-report',
-            'miscellaneous',
+            'miscellaneous-functions',
+            'miscellaneous-variables',
+            'miscellaneous-typealiases',
+            'miscellaneous-enumerations',
             'additional-page'
         ],
             i = 0,
@@ -92,7 +98,7 @@ export class HtmlEngine {
                            data: coverageData
                        });
                    outputFolder = outputFolder.replace(process.cwd(), '');
-                   fs.outputFile(path.resolve(process.cwd() + path.sep + outputFolder + path.sep + '/images/coverage-badge.svg'), result, function (err) {
+                   fs.outputFile(path.resolve(outputFolder + path.sep + '/images/coverage-badge.svg'), result, function (err) {
                        if(err) {
                            logger.error('Error during coverage badge file generation ', err);
                            reject(err);

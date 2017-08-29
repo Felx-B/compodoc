@@ -1,6 +1,11 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { FooService } from './foo.service';
 
+/**
+ * FooComponent description
+ *
+ * See {@link AppModule|APP}
+ */
 @Component({
 	selector: 'app-foo',
 	styles: [`
@@ -64,6 +69,14 @@ export class FooComponent implements IProxy {
 	public changeLabel3: string;
 	public changeLabel4: string;
 	public changeLabel5: string;
+
+	/**
+   * constructor description
+   * @param  {boolean} myprop description
+   */
+	constructor(public myprop: boolean) {
+
+	}
 
 }
 export interface IProxy {
