@@ -24,12 +24,14 @@
 <div class="tab-content">
     <div class="tab-pane fade active in" id="info">
         {{#if class.file}}
-        <p class="comment">
-            <h3>File</h3>
-        </p>
-        <p class="comment">
-            <code>{{class.file}}</code>
-        </p>
+        {{#unless publicDocumentation}}
+            <p class="comment">
+                <h3>File</h3>
+            </p>
+            <p class="comment">
+                <code>{{class.file}}</code>
+            </p>
+        {{/unless}}
         {{/if}}
         {{#if class.description}}
             <p class="comment">
@@ -78,14 +80,14 @@
     </div>
 
     {{#if class.readme}}
-    <div class="tab-pane fade" id="readme">
-        <p>{{{class.readme}}}</p>
-    </div>
+        <div class="tab-pane fade" id="readme">
+            <p>{{{class.readme}}}</p>
+        </div>
     {{/if}}
 
     {{#unless disableSourceCode}}
-    <div class="tab-pane fade tab-source-code" id="source">
-        <pre class="line-numbers"><code class="language-typescript">{{ class.sourceCode}}</code></pre>
-    </div>
+        <div class="tab-pane fade tab-source-code" id="source">
+            <pre class="line-numbers"><code class="language-typescript">{{ class.sourceCode}}</code></pre>
+        </div>
     {{/unless}}
 </div>

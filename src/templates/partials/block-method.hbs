@@ -9,7 +9,12 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-                        <b>{{#if modifierKind}}<span class="modifier">{{modifKind modifierKind}}</span>{{/if}} {{name}}</b>
+                        <b>
+                            {{#if modifierKind}}
+                            {{#unless ../publicDocumentation}}
+                            <span class="modifier">{{modifKind modifierKind}}</span>
+                            {{/unless}}
+                            {{/if}} {{name}}</b>
                     </td>
                 </tr>
                 {{#if ../file-path}}
@@ -22,17 +27,22 @@
                 <tr>
                     <td class="col-md-4">
                         {{#if modifierKind}}
+                        {{#unless ../publicDocumentation}}
                             <span class="modifier-icon method fa fa-play {{modifIcon modifierKind}}"></span>
-                        {{/if}}<code>{{{functionSignature this}}}</code>
+                        {{/unless}}
+                        {{/if}}
+                        <code>{{{functionSignature this}}}</code>
                     </td>
                 </tr>
 
                 {{#if decorators}}
+                {{#unless ../publicDocumentation}}
                     <tr>
                         <td class="col-md-4">
                             <i>Decorators : </i><code>{{#each decorators}}{{name}}{{/each}}</code>
                         </td>
                     </tr>
+                {{/unless}}
                 {{/if}}
 
                 {{#if line}}

@@ -44,9 +44,13 @@ export class SfkFilters {
             }
         }
 
-        deps.propertiesClass = filteredProperties;
-        deps.methodsClass = filteredMethods;
+        this.flattenConfig(deps);
+
+        deps.propertiesClass = filteredProperties.concat(deps.configProps || []);
+        deps.methodsClass = filteredMethods.concat(deps.configMethods || []);
         deps.outputsClass = filteredOutputs;
+
+
         deps.inputsClass = [];
         deps.implements = [];
         deps.extends = [];
@@ -58,7 +62,6 @@ export class SfkFilters {
         deps.styleUrls = [];
         deps.providers = [];
         deps.constructorObj = null;
-        deps.file = '';
         deps.displayMetadata = false;
     }
 
@@ -88,11 +91,11 @@ export class SfkFilters {
         deps.properties = filteredProperties;
         deps.methods = filteredMethods;
         deps.constructorObj = null;
-        deps.file = '';
     }
 
     public filterClassContent(deps: Deps) {
-        this.filterGenericContent(deps);
+        deps.constructorObj = null;
+        deps.implements = [];
     }
     public filterInjectableContent(deps: Deps) {
         this.filterGenericContent(deps);
@@ -113,5 +116,17 @@ export class SfkFilters {
     public populateClass(className, content) {
         this.classes[className] = content;
     }
+
+    private flattenConfig(deps) {
+
+        for (let prop of deps.propertiesClass) {
+            if (prop.name === "Config") {
+                deps.configMethods = this.getRecursive(prop.type, "methods") || [];
+                deps.configProps = this.getRecursive(prop.type, "properties") || [];
+                break;
+            }
+        }
+    }
+
 
 }

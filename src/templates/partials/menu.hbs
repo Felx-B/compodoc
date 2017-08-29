@@ -29,6 +29,7 @@
                       <a href="{{relativeURL depth pageType 'root'}}index.html" {{#compare name "===" 'index' }} class="active" {{/compare}}><span class="fa fa-file-text-o"></span>README</a>
                     </li>
                 {{else}}
+                    {{#if overview}}
                     <li class="link">
                         <a href="{{relativeURL depth pageType 'root'}}"
                             {{#compare name "===" 'overview' }} class="active" {{/compare}}
@@ -37,6 +38,7 @@
                             <span class="fa fa-th"></span>Overview
                         </a>
                     </li>
+                    {{/if}}
                 {{/if}}
                 {{#each markdowns}}
                     <li class="link">
@@ -165,6 +167,7 @@
         {{/if}}
 
         {{#if classes}}
+        {{#unless publicDocumentation}}
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"
                 {{#compare menu "===" 'normal' }}
@@ -189,8 +192,10 @@
                 {{/each}}
             </ul>
         </li>
+        {{/unless}}
         {{/if}}
         {{#if enums}}
+        {{#unless publicDocumentation}}
         <li class="chapter">
             <div class="simple menu-toggler" data-toggle="collapse"
                 {{#compare menu "===" 'normal' }}
@@ -215,6 +220,7 @@
                 {{/each}}
             </ul>
         </li>
+        {{/unless}}
         {{/if}}
 
 
@@ -306,9 +312,11 @@
         {{/if}}
 
         {{#if miscellaneous}}
+        {{#unless publicDocumentation}}
         <li class="chapter">
             <a data-type="chapter-link" href="{{relativeURL depth 'miscellaneous'}}miscellaneous.html" {{#compare name "===" 'miscellaneous' }} class="active" {{/compare}}><span class="fa fa-cubes"></span>Miscellaneous</a>
         </li>
+        {{/unless}}
         {{/if}}
 
         {{#unless disableCoverage}}

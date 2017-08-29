@@ -1,10 +1,12 @@
 {{#if component.file}}
+ {{#unless publicDocumentation}}
     <p class="comment">
         <h3>File</h3>
     </p>
     <p class="comment">
         <code>{{component.file}}</code>
     </p>
+{{/unless}}
 {{/if}}
 
 {{#if component.description}}

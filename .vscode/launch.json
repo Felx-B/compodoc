@@ -13,11 +13,14 @@
                 "${workspaceRoot}/bin/index-cli.js",
                 "-p",
                // "test/src/sample-files/tsconfig.simple.json",
-               "../SFK/src/Sfk.WebComponents/src/tsconfig.app.json",
+                "../SFK/src/Sfk.WebComponents/src/tsconfig.app.json",
                 "--disableSourceCode",
                 "--disableGraph",
-                "--disableCoverage",
-                "--publicDocumentation"
+                //"--disableCoverage",
+                "--publicDocumentation",
+                "-n",
+                "SFK",
+                "--hideGenerator"
             ],
             "cwd": "${workspaceRoot}",
             "protocol": "inspector"

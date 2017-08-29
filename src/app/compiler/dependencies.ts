@@ -510,9 +510,11 @@ export class Dependencies {
                     this.debug(deps);
 
                     if (this.configuration.mainData.publicDocumentation) {
-                        this.filters.filterClassContent(deps);
-                        if (deps.methods.length !== 0 || deps.properties.length !== 0) {
-                            outputSymbols['classes'].push(deps);
+                        if (deps.file.indexOf('testing') === -1) {
+                            this.filters.filterClassContent(deps);
+                            if (deps.methods.length !== 0 || deps.properties.length !== 0) {
+                                outputSymbols['classes'].push(deps);
+                            }
                         }
                     } else {
                         outputSymbols['classes'].push(deps);
@@ -592,7 +594,7 @@ export class Dependencies {
                     outputSymbols['routes'] = [...outputSymbols['routes'], ...newRoutes];
                 }
                 if (node.kind === ts.SyntaxKind.ClassDeclaration) {
-                    this.handleClassDecorators(file, srcFile, node, deps, outputSymbols);
+                    this.handleClassDecorators(file, srcFile, node, deps, outputSymbols, true);
                 }
                 if (node.kind === ts.SyntaxKind.ExpressionStatement) {
                     let bootstrapModuleReference = 'bootstrapModule';
@@ -688,7 +690,7 @@ export class Dependencies {
 
     }
 
-    private handleClassDecorators(file, srcFile, node: Node, deps, outputSymbols) {
+    private handleClassDecorators(file, srcFile, node: Node, deps, outputSymbols, register: boolean = false) {
         let name = this.getSymboleName(node);
         let IO = this.getClassIO(file, srcFile, node);
         deps = {
@@ -720,6 +722,20 @@ export class Dependencies {
         }
         this.debug(deps);
         this.filters.populateClass(deps.name, deps);
+
+        if (register) {
+            if (this.configuration.mainData.publicDocumentation) {
+                if (deps.file.indexOf('testing') === -1) {
+                    this.filters.filterClassContent(deps);
+                    if (deps.methods.length !== 0 || deps.properties.length !== 0) {
+                        outputSymbols['classes'].push(deps);
+                    }
+                }
+            } else {
+                outputSymbols['classes'].push(deps);
+            }
+        }
+
     }
 
     private debug(deps: Deps) {
