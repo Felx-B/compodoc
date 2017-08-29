@@ -149,6 +149,35 @@ export class Dependencies {
 
         let sourceFiles = this.program.getSourceFiles() || [];
 
+
+        sourceFiles.map((file: ts.SourceFile) => {
+            let filePath = file.fileName;
+            if (path.extname(filePath) === '.ts') {
+
+                if (filePath.lastIndexOf('.d.ts') === -1 && filePath.lastIndexOf('spec.ts') === -1) {
+                    logger.info('parsing', filePath);
+                    try {
+                        let cleaner = (process.cwd() + path.sep).replace(/\\/g, '/');
+                        ts.forEachChild(file, (node: ts.Node) => {
+                            //let deps: Deps = <Deps>{};
+                            let fileT = file.fileName.replace(cleaner, '');
+                            if(node.kind === ts.SyntaxKind.ClassDeclaration){
+                                this.processClass(node, fileT, file, {}, {}, false); 
+                            }
+                           
+                        });
+
+                    } catch (e) {
+                        logger.error(e, file.fileName);
+                    }
+                }
+
+            }
+
+            return deps;
+
+        });
+
         sourceFiles.map((file: ts.SourceFile) => {
 
             let filePath = file.fileName;
@@ -249,7 +278,7 @@ export class Dependencies {
         return deps;
     }
 
-    private processClass(node, file, srcFile, deps, outputSymbols) {
+    private processClass(node, file, srcFile, deps, outputSymbols, insert: boolean = true) {
         let name = this.getSymboleName(node);
         let IO = this.getClassIO(file, srcFile, node);
         deps = {
@@ -285,7 +314,7 @@ export class Dependencies {
         }
         this.debug(deps);
         this.filters.populateClass(deps.name, deps);
-        if (deps.file.indexOf('testing') === -1) {
+        if (deps.file.indexOf('testing') === -1 && insert) {
             outputSymbols['classes'].push(deps);
         }
     }

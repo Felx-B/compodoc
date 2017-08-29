@@ -21,8 +21,11 @@ export class SfkFilters {
         //Set Inputs as properties
 
         if (deps.extends) {
-            deps.propertiesClass = deps.propertiesClass.concat(this.getRecursive(deps.extends, "properties") || []);
-            deps.methodsClass = deps.methodsClass.concat(this.getRecursive(deps.extends, "methods") || []);
+            let parentProperties = this.getRecursive(deps.extends, "properties");
+            deps.propertiesClass = this.inheritParents(deps.propertiesClass, parentProperties);
+
+            let parentMethods = this.getRecursive(deps.extends, "methods");
+            deps.methodsClass = this.inheritParents(deps.methodsClass, parentMethods);
         }
 
         deps.propertiesClass = deps.propertiesClass.concat(deps.inputsClass);
@@ -46,10 +49,12 @@ export class SfkFilters {
 
         this.flattenConfig(deps);
 
-        deps.propertiesClass = filteredProperties.concat(deps.configProps || []);
-        deps.methodsClass = filteredMethods.concat(deps.configMethods || []);
+        deps.propertiesClass = this.inheritParents(filteredProperties, deps.configProps || []);
+        deps.methodsClass = this.inheritParents(filteredMethods, deps.configMethods || []);
         deps.outputsClass = filteredOutputs;
 
+        deps.propertiesClass = this.sortNodes(deps.propertiesClass);
+        deps.methodsClass = this.sortNodes(deps.methodsClass);
 
         deps.inputsClass = [];
         deps.implements = [];
@@ -88,14 +93,16 @@ export class SfkFilters {
             }
         }
 
-        deps.properties = filteredProperties;
-        deps.methods = filteredMethods;
+        deps.properties = this.sortNodes(filteredProperties);
+        deps.methods = this.sortNodes(filteredMethods);
         deps.constructorObj = null;
     }
 
     public filterClassContent(deps: Deps) {
         deps.constructorObj = null;
         deps.implements = [];
+
+
     }
     public filterInjectableContent(deps: Deps) {
         this.filterGenericContent(deps);
@@ -106,11 +113,35 @@ export class SfkFilters {
         if (!_class)
             return [];
 
-        if (_class.extends)
-            return _class[property].concat(this.getRecursive(_class.extends, property) || []);
-        else {
-            return _class[property]
+        let baseProp = _class[property];
+
+        if (_class.extends) {
+            let parentProperties = this.getRecursive(_class.extends, property);
+            return this.inheritParents(baseProp, parentProperties);
         }
+        else {
+            return baseProp
+        }
+    }
+
+
+    private existsInArray(children, element): boolean {
+        let result = false;
+        for (let child of children) {
+            if (child.name === element.name) {
+                return true;
+            }
+        }
+        return result;
+    }
+
+    private inheritParents(children, parents) {
+        for (let prop of parents) {
+            if (!this.existsInArray(children, prop)) {
+                children.push(prop);
+            }
+        }
+        return children
     }
 
     public populateClass(className, content) {
@@ -126,6 +157,22 @@ export class SfkFilters {
                 break;
             }
         }
+    }
+
+    private sortNodes(nodes: any[]): any[] {
+        return nodes.sort((n1, n2) => {
+            if (n1.name > n2.name) {
+                return 1;
+            }
+
+            if (n1.name < n2.name) {
+                return -1;
+            }
+
+            return 0;
+        });
+
+
     }
 
 
