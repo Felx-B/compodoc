@@ -101,7 +101,7 @@ class DependenciesEngine {
             resultInCompodocMiscellaneousVariables = finderInCompodocDependencies(this.miscellaneous.variables),
             resultInCompodocMiscellaneousFunctions = finderInCompodocDependencies(this.miscellaneous.functions),
             resultInCompodocMiscellaneousTypealiases = finderInCompodocDependencies(this.miscellaneous.typealiases),
-            resultInCompodocMiscellaneousEnumerations = finderInCompodocDependencies(this.miscellaneous.enumerations),
+            //resultInCompodocMiscellaneousEnumerations = finderInCompodocDependencies(this.miscellaneous.enumerations),
             resultInAngularAPIs = finderInAngularAPIs(type)
 
         if (resultInCompodocInjectables.data !== null) {
@@ -120,8 +120,8 @@ class DependenciesEngine {
             return resultInCompodocMiscellaneousFunctions;
         } else if (resultInCompodocMiscellaneousTypealiases.data !== null) {
             return resultInCompodocMiscellaneousTypealiases;
-        } else if (resultInCompodocMiscellaneousEnumerations.data !== null) {
-            return resultInCompodocMiscellaneousEnumerations;
+        // } else if (resultInCompodocMiscellaneousEnumerations.data !== null) {
+        //     return resultInCompodocMiscellaneousEnumerations;
         } else if (resultInAngularAPIs.data !== null) {
             return resultInAngularAPIs;
         }
@@ -205,15 +205,15 @@ class DependenciesEngine {
                 this.miscellaneous.typealiases[_index] = typealias;
             });
         }
-        if (updatedData.miscellaneous.enumerations.length > 0) {
-            _.forEach(updatedData.miscellaneous.enumerations, (enumeration) => {
-                let _index = _.findIndex(this.miscellaneous.enumerations, {
-                    'name': enumeration.name,
-                    'file': enumeration.file
-                });
-                this.miscellaneous.enumerations[_index] = enumeration;
-            });
-        }
+        // if (updatedData.miscellaneous.enumerations.length > 0) {
+        //     _.forEach(updatedData.miscellaneous.enumerations, (enumeration) => {
+        //         let _index = _.findIndex(this.miscellaneous.enumerations, {
+        //             'name': enumeration.name,
+        //             'file': enumeration.file
+        //         });
+        //         this.miscellaneous.enumerations[_index] = enumeration;
+        //     });
+        // }
         this.prepareMiscellaneous();
     }
     findInCompodoc(name: string) {
@@ -225,7 +225,7 @@ class DependenciesEngine {
         //group each subgoup by file
         this.miscellaneous.groupedVariables = _.groupBy(this.miscellaneous.variables, 'file');
         this.miscellaneous.groupedFunctions = _.groupBy(this.miscellaneous.functions, 'file');
-        this.miscellaneous.groupedEnumerations = _.groupBy(this.miscellaneous.enumerations, 'file');
+        //this.miscellaneous.groupedEnumerations = _.groupBy(this.miscellaneous.enumerations, 'file');
         this.miscellaneous.groupedTypeAliases = _.groupBy(this.miscellaneous.typealiases, 'file');
     }
     getModule(name: string) {

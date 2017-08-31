@@ -577,7 +577,6 @@ export class Dependencies {
                         name,
                         type: 'enum',
                         childs: infos,
-                        type: 'miscellaneous',
                         subtype: 'enum',
                         description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
                         file: file
@@ -716,7 +715,7 @@ export class Dependencies {
                     deps = {
                         name,
                         childs: infos,
-                        type: 'miscellaneous',
+                        type: 'enum',
                         subtype: 'enum',
                         description: this.visitEnumTypeAliasFunctionDeclarationDescription(node),
                         file: file

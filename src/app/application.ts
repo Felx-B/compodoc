@@ -409,6 +409,9 @@ export class Application {
         if ($dependenciesEngine.classes.length > 0) {
             logger.info(`- class      : ${$dependenciesEngine.classes.length}`);
         }
+        if ($dependenciesEngine.enums.length > 0) {
+            logger.info(`- enums      : ${$dependenciesEngine.enums.length}`);
+        }
         if ($dependenciesEngine.interfaces.length > 0) {
             logger.info(`- interface  : ${$dependenciesEngine.interfaces.length}`);
         }
@@ -700,6 +703,7 @@ export class Application {
                         this.configuration.addPage({
                             path: 'enums',
                             name: this.configuration.mainData.enums[i].name,
+                            id: this.configuration.mainData.enums[i].id,
                             context: 'enum',
                             class: this.configuration.mainData.enums[i],
                             depth: 1,

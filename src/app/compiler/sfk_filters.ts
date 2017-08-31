@@ -18,20 +18,24 @@ export class SfkFilters {
         let filteredProperties: object[] = [];
         let filteredMethods: object[] = [];
         let filteredOutputs: object[] = [];
-        //Set Inputs as properties
 
         if (deps.extends) {
             let parentProperties = this.getRecursive(deps.extends, "properties");
             deps.propertiesClass = this.inheritParents(deps.propertiesClass, parentProperties);
 
+            // let parentInputs = this.getRecursive(deps.extends, "inputs");
+            // deps.inputsClass = this.inheritParents(deps.inputsClass, parentInputs);
+
             let parentMethods = this.getRecursive(deps.extends, "methods");
             deps.methodsClass = this.inheritParents(deps.methodsClass, parentMethods);
         }
 
+        // set inputs as properties
         deps.propertiesClass = deps.propertiesClass.concat(deps.inputsClass);
+
         if (deps.file.indexOf('testing') === -1) {
             for (let prop of deps.propertiesClass) {
-                if (this.IsAllowedScripting(prop.decorators)) {
+                if (this.IsAllowedScripting(prop.decorators) || deps.name === 'Config') {
                     filteredProperties.push(prop);
                 }
             }
@@ -70,6 +74,33 @@ export class SfkFilters {
         deps.displayMetadata = false;
     }
 
+
+
+    public filterClassContent(deps: Deps) {
+        deps.constructorObj = null;
+        deps.implements = [];
+    }
+    public filterInjectableContent(deps: Deps) {
+        this.filterGenericContent(deps);
+    }
+    public populateClass(className, content) {
+        this.classes[className] = content;
+    }
+    private getRecursive(className, property) {
+        let _class = this.classes[className];
+        if (!_class) {
+            return [];
+        }
+
+        let baseProp = _class[property];
+
+        if (_class.extends) {
+            let parentProperties = this.getRecursive(_class.extends, property);
+            return this.inheritParents(baseProp, parentProperties);
+        } else {
+            return baseProp;
+        }
+    }
     private filterGenericContent(deps: Deps) {
         let filteredProperties: object[] = [];
         let filteredMethods: object[] = [];
@@ -98,33 +129,6 @@ export class SfkFilters {
         deps.constructorObj = null;
     }
 
-    public filterClassContent(deps: Deps) {
-        deps.constructorObj = null;
-        deps.implements = [];
-
-
-    }
-    public filterInjectableContent(deps: Deps) {
-        this.filterGenericContent(deps);
-    }
-
-    private getRecursive(className, property) {
-        let _class = this.classes[className];
-        if (!_class)
-            return [];
-
-        let baseProp = _class[property];
-
-        if (_class.extends) {
-            let parentProperties = this.getRecursive(_class.extends, property);
-            return this.inheritParents(baseProp, parentProperties);
-        }
-        else {
-            return baseProp
-        }
-    }
-
-
     private existsInArray(children, element): boolean {
         let result = false;
         for (let child of children) {
@@ -141,11 +145,7 @@ export class SfkFilters {
                 children.push(prop);
             }
         }
-        return children
-    }
-
-    public populateClass(className, content) {
-        this.classes[className] = content;
+        return children;
     }
 
     private flattenConfig(deps) {
